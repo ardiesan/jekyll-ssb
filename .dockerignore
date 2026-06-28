@@ -1,0 +1,45 @@
+# Keep secrets, build output, and local cruft OUT of the build context.
+
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# Secrets & credentials  (NEVER ship these)
+*.pem
+*.key
+*.crt
+.env
+.env.*
+.envrc
+secrets/
+.ssh
+.netrc
+
+# Jekyll build artifacts & caches (regenerated inside the container)
+_site/
+.jekyll-cache/
+.jekyll-metadata
+.sass-cache/
+
+# Ruby / Bundler local install (gems are installed in the image)
+vendor/
+vendor/bundle/
+.bundle/
+
+# CI / Docker / IaC
+.github/
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Editor / OS noise
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Logs & temp
+*.log
+tmp/
