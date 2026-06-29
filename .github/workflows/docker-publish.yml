@@ -23,7 +23,8 @@ on:
 
 env:
   # Use docker.io for Docker Hub if empty
-  REGISTRY: ghcr.io
+  GHCR_REGISTRY: ghcr.io
+  DCKR_REGISTRY: docker.io
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository_owner }}/jekyll
 
@@ -74,7 +75,7 @@ jobs:
         if: github.event_name != 'pull_request'
         uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
         with:
-          registry: ${{ env.REGISTRY }}
+          registry: ${{ env.GHCR_REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           
@@ -93,8 +94,8 @@ jobs:
         uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
         with:
           images: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-            docker.io/${{ env.IMAGE_NAME }}
+            ${{ env.GHCR_REGISTRY }}/${{ env.IMAGE_NAME }}
+            ${{ env.DCKR_REGISTRY }}/${{ env.IMAGE_NAME }}
           # Always move `latest` to this build, on every trigger.
           flavor: |
             latest=true
@@ -136,14 +137,14 @@ jobs:
       - name: Attest build provenance (GHCR)
         uses: actions/attest-build-provenance@v2
         with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          subject-name: ${{ env.GHCR_REGISTRY }}/${{ env.IMAGE_NAME }}
           subject-digest: ${{ steps.build.outputs.digest }}
           push-to-registry: true
  
       - name: Attest build provenance (Docker Hub)
         uses: actions/attest-build-provenance@v2
         with:
-          subject-name: ${{ env.IMAGE_NAME }}
+          subject-name: ${{ env.DCKR_REGISTRY }}/${{ env.IMAGE_NAME }}
           subject-digest: ${{ steps.build.outputs.digest }}
           push-to-registry: true
 
